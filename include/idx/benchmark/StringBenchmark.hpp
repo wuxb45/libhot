@@ -19,7 +19,7 @@
 #include "idx/benchmark/StringBenchmarkCommandlineHelper.hpp"
 #include "idx/benchmark/StringBenchmarkConfiguration.hpp"
 #include "idx/benchmark/BenchmarkResult.hpp"
-#include "idx/utils/GitSHA1.hpp"
+//#include "idx/utils/GitSHA1.hpp"
 
 
 #ifdef USE_COUNTERS
@@ -443,7 +443,7 @@ public:
 			binaryBaseName = binaryBaseName.substr(lastSlash + 1);
 		}
 		std::string l0(depth * 2, ' ');
-		output << l0 << "gitCommitNumber: " << idx::utils::g_GIT_SHA1 << std::endl;
+		//output << l0 << "gitCommitNumber: " << idx::utils::g_GIT_SHA1 << std::endl;
 		output << l0 << "dataStructure: " << mDataStructureName <<  std::endl;
 		output << l0 << "binary: " << binaryBaseName <<  std::endl;
 		output << l0 << "configuration:" << std::endl;
