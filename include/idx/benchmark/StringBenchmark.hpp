@@ -21,6 +21,27 @@
 #include "idx/benchmark/BenchmarkResult.hpp"
 //#include "idx/utils/GitSHA1.hpp"
 
+extern "C" {
+static thread_local union {
+  __uint128_t v128;
+  uint64_t v64[2];
+} rseed_u128 = {.v64 = {4294967291, 1549556881}};
+
+  uint64_t
+random_u64(void)
+{
+  const uint64_t r = rseed_u128.v64[1];
+  rseed_u128.v128 *= 0xda942042e4dd58b5lu;
+  return r;
+}
+
+  void
+srandom_u64(const uint64_t seed)
+{
+  rseed_u128.v128 = (((__uint128_t)(~seed)) << 64) | (seed | 1);
+  (void)random_u64();
+}
+}
 
 #ifdef USE_COUNTERS
 #include "PerfEvent.hpp"
@@ -240,33 +261,30 @@ public:
 																														 hasThreadInfo(mBenchmarkable),
 																														 [&](auto &benchmarkable) {
 																																 bool allLookedUp = true;
-																																 size_t index = range.begin();
 																																 decltype(benchmarkable.getThreadInformation()) threadInfo = benchmarkable.getThreadInformation();
-																																 for (size_t i = index; i < range.end(); ++i) {
-																																	 index = index < totalNumberKeys ? index : index %
-																																																						 totalNumberKeys;
-																																	 __builtin_prefetch((keys)[index + 1].first, 0, 0);
-																																	 __builtin_prefetch((keys)[index + 1].first + 64, 0,
-																																											0);
-																																	 allLookedUp &= benchmarkable.search(threadInfo,
-																																																			 lookupKeys[index]);
-																																	 ++index;
-																																 }
+                                                                 srandom_u64((uint64_t)&allLookedUp);
+                                                                 uint64_t r = random_u64() % totalNumberKeys;
+                                                                 for (size_t i = range.begin(); i < range.end(); ++i) {
+                                                                    uint64_t r2 = random_u64() % totalNumberKeys;
+                                                                    __builtin_prefetch((keys)[r2].first, 0, 0);
+                                                                    __builtin_prefetch((keys)[r2].first + 64, 0, 0);
+                                                                    allLookedUp &= benchmarkable.search(threadInfo, lookupKeys[r]);
+                                                                    r = r2;
+                                                                 }
+
 																																 return allLookedUp;
 																														 },
 																														 [&](auto &benchmarkable) {
 																																 bool allLookedUp = true;
-																																 size_t index = range.begin();
-																																 for (size_t i = index; i < range.end(); ++i) {
-																																	 index = index < totalNumberKeys ? index : index %
-																																																						 totalNumberKeys;
-																																	 __builtin_prefetch((keys)[index + 1].first, 0, 0);
-																																	 __builtin_prefetch((keys)[index + 1].first + 64, 0,
-																																											0);
-																																	 allLookedUp &= benchmarkable.search(
-																																		 lookupKeys[index]);
-																																	 ++index;
-																																 }
+                                                                 srandom_u64((uint64_t)&allLookedUp);
+                                                                 uint64_t r = random_u64() % totalNumberKeys;
+                                                                 for (size_t i = range.begin(); i < range.end(); ++i) {
+                                                                    uint64_t r2 = random_u64() % totalNumberKeys;
+                                                                    __builtin_prefetch((keys)[r2].first, 0, 0);
+                                                                    __builtin_prefetch((keys)[r2].first + 64, 0, 0);
+                                                                    allLookedUp &= benchmarkable.search(lookupKeys[r]);
+                                                                    r = r2;
+                                                                 }
 																																 return allLookedUp;
 																														 }
 																													 )(mBenchmarkable);
