@@ -58,6 +58,9 @@ template<typename Operation> inline bool executeForDiffingKeys(uint8_t const* ex
 	for(size_t index = 0; index < keyLengthInBytes; ++index) {
 		uint8_t newByte = newKey[index];
 		uint8_t existingByte = existingKey[index];
+    if ((newByte == 0) && (existingByte == 0)) {
+      return false;
+    }
 		if(existingByte != newByte) {
 			operation(DiscriminativeBit {static_cast<uint16_t>(index), existingByte, newByte });
 			return true;
@@ -70,6 +73,9 @@ inline idx::contenthelpers::OptionalValue<DiscriminativeBit> getMismatchingBit(u
 	for(size_t index = 0; index < keyLengthInBytes; ++index) {
 		uint8_t newByte = newKey[index];
 		uint8_t existingByte = existingKey[index];
+    if ((newByte == 0) && (existingByte == 0)) {
+      return { false, { 0, 0, 0 }};
+    }
 		if(existingByte != newByte) {
 			return { true, DiscriminativeBit { static_cast<uint16_t>(index), existingByte, newByte } };
 		}
