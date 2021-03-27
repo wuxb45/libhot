@@ -6,19 +6,23 @@
 #include "idx/benchmark/BenchmarkEventTypeId.hpp"
 #include "idx/benchmark/BenchmarkEventTypeIdToEventTypeMapping.hpp"
 
-namespace idx { namespace benchmark {
+namespace idx {
+namespace benchmark {
 
 struct BenchmarkBaseEvent {
-	BenchmarkEventTypeId const mEventTypeId;
-	BenchmarkBaseEvent* mNextEvent;
+  BenchmarkEventTypeId const mEventTypeId;
+  BenchmarkBaseEvent *mNextEvent;
 
-	//disable copy of the base type as it can cause unexpected troubles in combination with casts (base type is copied but super type is not considered)
-	BenchmarkBaseEvent(BenchmarkBaseEvent const & other ) = delete;
+  // disable copy of the base type as it can cause unexpected troubles in
+  // combination with casts (base type is copied but super type is not
+  // considered)
+  BenchmarkBaseEvent(BenchmarkBaseEvent const &other) = delete;
 
-	BenchmarkBaseEvent(BenchmarkEventTypeId eventTypeId) : mEventTypeId(eventTypeId), mNextEvent(nullptr) {
-	}
+  BenchmarkBaseEvent(BenchmarkEventTypeId eventTypeId)
+      : mEventTypeId(eventTypeId), mNextEvent(nullptr) {}
 };
 
-}}
+} // namespace benchmark
+} // namespace idx
 
 #endif

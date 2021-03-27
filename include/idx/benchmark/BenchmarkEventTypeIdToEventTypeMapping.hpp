@@ -7,27 +7,38 @@
 #include "idx/benchmark/ScanEvent.hpp"
 #include "idx/benchmark/UpdateEvent.hpp"
 
-namespace idx { namespace benchmark {
+namespace idx {
+namespace benchmark {
 
-template<typename ValueType, template <typename> typename KeyExtractor, BenchmarkEventTypeId eventTypeId> struct BenchmarkEventTypeIdToEventType {
+template <typename ValueType, template <typename> typename KeyExtractor,
+          BenchmarkEventTypeId eventTypeId>
+struct BenchmarkEventTypeIdToEventType {};
+
+template <typename ValueType, template <typename> typename KeyExtractor>
+struct BenchmarkEventTypeIdToEventType<
+    ValueType, KeyExtractor, BenchmarkEventTypeId::UpdateEventTypeId> {
+  using EventType = UpdateEvent<ValueType, KeyExtractor>;
 };
 
-template<typename ValueType, template <typename> typename KeyExtractor> struct BenchmarkEventTypeIdToEventType<ValueType, KeyExtractor, BenchmarkEventTypeId::UpdateEventTypeId> {
-	using EventType = UpdateEvent<ValueType, KeyExtractor>;
+template <typename ValueType, template <typename> typename KeyExtractor>
+struct BenchmarkEventTypeIdToEventType<
+    ValueType, KeyExtractor, BenchmarkEventTypeId::LookupEventTypeId> {
+  using EventType = LookupEvent<ValueType, KeyExtractor>;
 };
 
-template<typename ValueType, template <typename> typename KeyExtractor> struct BenchmarkEventTypeIdToEventType<ValueType, KeyExtractor, BenchmarkEventTypeId::LookupEventTypeId> {
-	using EventType = LookupEvent<ValueType, KeyExtractor>;
+template <typename ValueType, template <typename> typename KeyExtractor>
+struct BenchmarkEventTypeIdToEventType<
+    ValueType, KeyExtractor, BenchmarkEventTypeId::InsertEventTypeId> {
+  using EventType = InsertEvent<ValueType, KeyExtractor>;
 };
 
-template<typename ValueType, template <typename> typename KeyExtractor> struct BenchmarkEventTypeIdToEventType<ValueType, KeyExtractor, BenchmarkEventTypeId::InsertEventTypeId> {
-	using EventType = InsertEvent<ValueType, KeyExtractor>;
+template <typename ValueType, template <typename> typename KeyExtractor>
+struct BenchmarkEventTypeIdToEventType<ValueType, KeyExtractor,
+                                       BenchmarkEventTypeId::ScanEventTypeId> {
+  using EventType = ScanEvent<ValueType, KeyExtractor>;
 };
 
-template<typename ValueType, template <typename> typename KeyExtractor> struct BenchmarkEventTypeIdToEventType<ValueType, KeyExtractor, BenchmarkEventTypeId::ScanEventTypeId> {
-	using EventType = ScanEvent<ValueType, KeyExtractor>;
-};
-
-}}
+} // namespace benchmark
+} // namespace idx
 
 #endif

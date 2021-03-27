@@ -12,39 +12,45 @@
 #include "idx/benchmark/ScanEvent.hpp"
 #include "idx/benchmark/UpdateEvent.hpp"
 
-namespace idx { namespace benchmark {
+namespace idx {
+namespace benchmark {
 
-template<typename IndexStructure, typename ValueType, template <typename> typename KeyExtractor> class BenchmarkEventExecutor {
+template <typename IndexStructure, typename ValueType,
+          template <typename> typename KeyExtractor>
+class BenchmarkEventExecutor {
 
-	std::shared_ptr<IndexStructure> mIndex;
+  std::shared_ptr<IndexStructure> mIndex;
 
 public:
-	using SpecificInsertEvent = InsertEvent<ValueType, KeyExtractor>;
-	using SpecificLookupEvent = LookupEvent<ValueType, KeyExtractor>;
-	using SpecificScanEvent = ScanEvent<ValueType, KeyExtractor>;
-	using SpecificUpdateEvent = UpdateEvent<ValueType, KeyExtractor>;
+  using SpecificInsertEvent = InsertEvent<ValueType, KeyExtractor>;
+  using SpecificLookupEvent = LookupEvent<ValueType, KeyExtractor>;
+  using SpecificScanEvent = ScanEvent<ValueType, KeyExtractor>;
+  using SpecificUpdateEvent = UpdateEvent<ValueType, KeyExtractor>;
 
-	BenchmarkEventExecutor(std::shared_ptr<IndexStructure> const & index) : mIndex(index) {
-	}
+  BenchmarkEventExecutor(std::shared_ptr<IndexStructure> const &index)
+      : mIndex(index) {}
 
-	inline bool operator()(SpecificInsertEvent const & insertEvent) {
-		return mIndex->insert(insertEvent.mValueToInsert);
-	}
+  inline bool operator()(SpecificInsertEvent const &insertEvent) {
+    return mIndex->insert(insertEvent.mValueToInsert);
+  }
 
-	inline bool operator()(SpecificLookupEvent const & lookupEvent) {
-		return mIndex->lookup(lookupEvent.mKey).compliesWith(lookupEvent.mExpectedValue);
-	}
+  inline bool operator()(SpecificLookupEvent const &lookupEvent) {
+    return mIndex->lookup(lookupEvent.mKey)
+        .compliesWith(lookupEvent.mExpectedValue);
+  }
 
-	inline bool operator()(SpecificScanEvent const & scanEvent) {
-		return mIndex->scan(scanEvent.mLookupKey, scanEvent.mNumberValuesToScan).compliesWith(scanEvent.mLastResult);
-	}
+  inline bool operator()(SpecificScanEvent const &scanEvent) {
+    return mIndex->scan(scanEvent.mLookupKey, scanEvent.mNumberValuesToScan)
+        .compliesWith(scanEvent.mLastResult);
+  }
 
-	inline bool operator()(SpecificUpdateEvent const & updateEvent) {
-		return mIndex->upsert(updateEvent.mNewValue).compliesWith(updateEvent.mPreviousValue);
-	}
-
+  inline bool operator()(SpecificUpdateEvent const &updateEvent) {
+    return mIndex->upsert(updateEvent.mNewValue)
+        .compliesWith(updateEvent.mPreviousValue);
+  }
 };
 
-}}
+} // namespace benchmark
+} // namespace idx
 
 #endif

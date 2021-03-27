@@ -5,55 +5,60 @@
 #include "idx/benchmark/BenchmarkEventTypeId.hpp"
 #include "idx/benchmark/BenchmarkEventTypeIdToEventTypeMapping.hpp"
 
-namespace idx { namespace benchmark {
+namespace idx {
+namespace benchmark {
 
-template<BenchmarkEventTypeId eventTypeId, typename ValueType, template <typename> typename KeyExtractor> class BenchmarkEvent : public BenchmarkBaseEvent {
+template <BenchmarkEventTypeId eventTypeId, typename ValueType,
+          template <typename> typename KeyExtractor>
+class BenchmarkEvent : public BenchmarkBaseEvent {
 public:
-	using EventType = typename BenchmarkEventTypeIdToEventType<ValueType, KeyExtractor, eventTypeId>::EventType;
+  using EventType =
+      typename BenchmarkEventTypeIdToEventType<ValueType, KeyExtractor,
+                                               eventTypeId>::EventType;
+
 private:
-	EventType data;
+  EventType data;
 
 public:
-	template<typename... Args> BenchmarkEvent(Args... args) : BenchmarkBaseEvent(eventTypeId), data(args...) {
-	}
+  template <typename... Args>
+  BenchmarkEvent(Args... args)
+      : BenchmarkBaseEvent(eventTypeId), data(args...) {}
 
-	EventType & getData() {
-		return data;
-	}
+  EventType &getData() { return data; }
 };
-
 
 /*
 
 template<typename EventTypeId> struct BenchmarkEvent {
-	typename EventTypeIdToEventType::EventType mEventData;
-	EventType mNextEventType;
+        typename EventTypeIdToEventType::EventType mEventData;
+        EventType mNextEventType;
 };
 
 struct BenchmarkEventProcessor(eventInputData) {
-	EventTypeId firstEventTypeId;
-	void* mRawEventMemory
+        EventTypeId firstEventTypeId;
+        void* mRawEventMemory
 
-	totalBenchmarkEventsSize = estimateSize(eventInputData);
-	allocate();
+        totalBenchmarkEventsSize = estimateSize(eventInputData);
+        allocate();
 
-	read(eventInputData) {
+        read(eventInputData) {
 
-	}
+        }
 }
 
 BenchmarkEventIterator {
-	void* currentEventMemory;
-	EventTypeId currentEventType;
-	size_t remainingEvents;
+        void* currentEventMemory;
+        EventTypeId currentEventType;
+        size_t remainingEvents;
 
-	void run() {
-		while(remainingEvents > 0) {
-			currentEventMemory += processCurrentEvent();
-		}
-	}
+        void run() {
+                while(remainingEvents > 0) {
+                        currentEventMemory += processCurrentEvent();
+                }
+        }
 };*/
 
-}}
+} // namespace benchmark
+} // namespace idx
 
 #endif

@@ -3,19 +3,20 @@
 
 /** @author robert.binna@uibk.ac.at */
 
-namespace idx { namespace contenthelpers {
+namespace idx {
+namespace contenthelpers {
 
 /**
  * Comparator which lexicographically compares two c-strings
  */
 class CStringComparator {
 public:
-	inline bool operator()(const char* first, const char* second) const {
-		return strcmp(first, second) < 0;
-	};
+  inline bool operator()(const char *first, const char *second) const {
+    return strcmp(first, second) < 0;
+  };
 };
 
-} }
+} // namespace contenthelpers
+} // namespace idx
 
 #endif
-

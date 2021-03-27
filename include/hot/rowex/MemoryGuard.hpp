@@ -3,24 +3,25 @@
 
 #include "hot/rowex/EpochBasedMemoryReclamationStrategy.hpp"
 
-namespace hot { namespace rowex {
+namespace hot {
+namespace rowex {
 
 class MemoryGuard {
-	EpochBasedMemoryReclamationStrategy* mMemoryReclamation;
+  EpochBasedMemoryReclamationStrategy *mMemoryReclamation;
 
 public:
-	MemoryGuard(EpochBasedMemoryReclamationStrategy* memoryReclamation) : mMemoryReclamation(memoryReclamation) {
-		mMemoryReclamation->enterCriticalSection();
-	}
+  MemoryGuard(EpochBasedMemoryReclamationStrategy *memoryReclamation)
+      : mMemoryReclamation(memoryReclamation) {
+    mMemoryReclamation->enterCriticalSection();
+  }
 
-	~MemoryGuard() {
-		mMemoryReclamation->leaveCriticialSection();
-	}
+  ~MemoryGuard() { mMemoryReclamation->leaveCriticialSection(); }
 
-	MemoryGuard(MemoryGuard const & other) = delete;
-	MemoryGuard &operator=(MemoryGuard const & other) = delete;
+  MemoryGuard(MemoryGuard const &other) = delete;
+  MemoryGuard &operator=(MemoryGuard const &other) = delete;
 };
 
-}}
+} // namespace rowex
+} // namespace hot
 
 #endif // __HOT_MEMORY_GUARD__

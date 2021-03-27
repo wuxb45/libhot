@@ -3,7 +3,8 @@
 
 #include <cstdint>
 
-namespace hot { namespace commons {
+namespace hot {
+namespace commons {
 
 /**
  * A Helper Function for storing additional result information:
@@ -11,22 +12,23 @@ namespace hot { namespace commons {
  * 	- the most significant bit index of the containing node
  */
 struct SearchResultForInsert {
-	uint32_t mEntryIndex;
-	uint16_t mMostSignificantBitIndex;
+  uint32_t mEntryIndex;
+  uint16_t mMostSignificantBitIndex;
 
-	inline SearchResultForInsert(uint32_t entryIndex, uint16_t mostSignificantBitIndex)
-		: mEntryIndex(entryIndex), mMostSignificantBitIndex(mostSignificantBitIndex) {
-	}
+  inline SearchResultForInsert(uint32_t entryIndex,
+                               uint16_t mostSignificantBitIndex)
+      : mEntryIndex(entryIndex),
+        mMostSignificantBitIndex(mostSignificantBitIndex) {}
 
-	inline SearchResultForInsert() {
-	}
+  inline SearchResultForInsert() {}
 
-	inline void init(uint32_t entryIndex, uint16_t mostSignificantBitIndex) {
-		mEntryIndex = entryIndex;
-		mMostSignificantBitIndex = mostSignificantBitIndex;
-	}
+  inline void init(uint32_t entryIndex, uint16_t mostSignificantBitIndex) {
+    mEntryIndex = entryIndex;
+    mMostSignificantBitIndex = mostSignificantBitIndex;
+  }
 };
 
-}}
+} // namespace commons
+} // namespace hot
 
 #endif

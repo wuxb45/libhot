@@ -5,18 +5,23 @@
 
 #include <utility>
 
-namespace idx { namespace contenthelpers {
+namespace idx {
+namespace contenthelpers {
 
 /**
- * Helper Template, given a value type and key extractor type it is able to determine the corresponding key type.
+ * Helper Template, given a value type and key extractor type it is able to
+ * determine the corresponding key type.
  *
  * @tparam ValueType the type of the value
  * @tparam KeyExtractor the key extractor to consider
  */
-template<typename ValueType, template <typename> typename KeyExtractor> struct ValueToKeyTypeMapper {
-	using KeyType = decltype(std::declval<KeyExtractor<ValueType>>()(std::declval<ValueType>()));
+template <typename ValueType, template <typename> typename KeyExtractor>
+struct ValueToKeyTypeMapper {
+  using KeyType = decltype(
+      std::declval<KeyExtractor<ValueType>>()(std::declval<ValueType>()));
 };
 
-}}
+} // namespace contenthelpers
+} // namespace idx
 
 #endif

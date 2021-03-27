@@ -3,116 +3,110 @@
 
 #include <cstddef>
 
-#include "idx/benchmark/ContinuosBuffer.hpp"
 #include "idx/benchmark/BenchmarkBaseEvent.hpp"
+#include "idx/benchmark/ContinuosBuffer.hpp"
 
-namespace idx { namespace benchmark {
+namespace idx {
+namespace benchmark {
 
 class BenchmarkEventList {
-	static constexpr size_t MAX_ALIGNMENT_IN_BYTES = sizeof(std::max_align_t);
-	size_t mInitialBackingBufferSize;
-	size_t mNumberEvents;
-	std::unique_ptr<std::max_align_t[]> mBackingBuffer;
-	ContinuousBuffer mRemainingBuffer;
-	BenchmarkBaseEvent* mHead;
-	BenchmarkBaseEvent** mEndPointer;
+  static constexpr size_t MAX_ALIGNMENT_IN_BYTES = sizeof(std::max_align_t);
+  size_t mInitialBackingBufferSize;
+  size_t mNumberEvents;
+  std::unique_ptr<std::max_align_t[]> mBackingBuffer;
+  ContinuousBuffer mRemainingBuffer;
+  BenchmarkBaseEvent *mHead;
+  BenchmarkBaseEvent **mEndPointer;
 
 public:
-	BenchmarkEventList(size_t backingBufferSize)
-		: mInitialBackingBufferSize(backingBufferSize),
-		  mNumberEvents(0ul),
-		  mBackingBuffer(new std::max_align_t[getNumberMaxAlignTSizeBlocks(backingBufferSize)]),
-		  mRemainingBuffer(mBackingBuffer.get(), backingBufferSize),
-		  mHead(nullptr),
-		  mEndPointer(&mHead)
-	{
-	}
+  BenchmarkEventList(size_t backingBufferSize)
+      : mInitialBackingBufferSize(backingBufferSize), mNumberEvents(0ul),
+        mBackingBuffer(new std::max_align_t[getNumberMaxAlignTSizeBlocks(
+            backingBufferSize)]),
+        mRemainingBuffer(mBackingBuffer.get(), backingBufferSize),
+        mHead(nullptr), mEndPointer(&mHead) {}
 
-	BenchmarkEventList() : mInitialBackingBufferSize(0ul), mBackingBuffer(nullptr), mRemainingBuffer(nullptr, 0ul), mHead(nullptr), mEndPointer(&mHead) {
-	}
+  BenchmarkEventList()
+      : mInitialBackingBufferSize(0ul), mBackingBuffer(nullptr),
+        mRemainingBuffer(nullptr, 0ul), mHead(nullptr), mEndPointer(&mHead) {}
 
+  BenchmarkEventList(BenchmarkEventList &&other) = default;
+  BenchmarkEventList &operator=(BenchmarkEventList &&other) = default;
 
-	BenchmarkEventList(BenchmarkEventList && other) = default;
-	BenchmarkEventList & operator=(BenchmarkEventList && other) = default;
+  BenchmarkEventList(BenchmarkEventList const &other) = delete;
+  BenchmarkEventList &operator=(BenchmarkEventList const &other) = delete;
 
-	BenchmarkEventList(BenchmarkEventList const & other) = delete;
-	BenchmarkEventList & operator=(BenchmarkEventList const & other) = delete;
+  size_t getBackingBufferBytesUsed() {
+    return mInitialBackingBufferSize - mRemainingBuffer.mRemainingBufferSize;
+  }
 
+  size_t getRemainingBackingBytes() {
+    return mRemainingBuffer.mRemainingBufferSize;
+  }
 
-	size_t getBackingBufferBytesUsed() {
-		return mInitialBackingBufferSize - mRemainingBuffer.mRemainingBufferSize;
-	}
+  static size_t constexpr getNumberMaxAlignTSizeBlocks(
+      size_t backingBufferSize) {
+    return (backingBufferSize / MAX_ALIGNMENT_IN_BYTES) +
+           std::min<size_t>(1, backingBufferSize % MAX_ALIGNMENT_IN_BYTES);
+  }
 
-	size_t getRemainingBackingBytes() {
-		return mRemainingBuffer.mRemainingBufferSize;
-	}
+  template <typename EventConstructor, typename... Args>
+  BenchmarkBaseEvent *addEvent(EventConstructor constructor, Args... args) {
+    const std::pair<BenchmarkBaseEvent *, ContinuousBuffer> &event =
+        constructor(args..., mRemainingBuffer);
+    *mEndPointer = event.first;
+    mEndPointer = &event.first->mNextEvent;
+    mRemainingBuffer = event.second;
 
-	static size_t constexpr getNumberMaxAlignTSizeBlocks(size_t backingBufferSize) {
-		return (backingBufferSize/MAX_ALIGNMENT_IN_BYTES) + std::min<size_t>(1, backingBufferSize%MAX_ALIGNMENT_IN_BYTES);
-	}
+    ++mNumberEvents;
 
+    return event.first;
+  }
 
-	template<typename EventConstructor, typename... Args> BenchmarkBaseEvent* addEvent(EventConstructor constructor, Args... args) {
-		const std::pair<BenchmarkBaseEvent *, ContinuousBuffer> & event = constructor(args..., mRemainingBuffer);
-		*mEndPointer = event.first;
-		mEndPointer = &event.first->mNextEvent;
-		mRemainingBuffer = event.second;
+  class BenchmarkEventListIterator {
+    friend class BenchmarkEventList;
 
-		++mNumberEvents;
+  private:
+    BenchmarkBaseEvent *mCurrent;
 
-		return event.first;
-	}
+    BenchmarkEventListIterator() : BenchmarkEventListIterator(nullptr) {}
 
+    BenchmarkEventListIterator(BenchmarkBaseEvent *current)
+        : mCurrent(current) {}
 
-	class BenchmarkEventListIterator {
-		friend class BenchmarkEventList;
-	private:
-		BenchmarkBaseEvent* mCurrent;
+  public:
+    BenchmarkBaseEvent &operator*() { return *mCurrent; }
 
-		BenchmarkEventListIterator() : BenchmarkEventListIterator(nullptr) {
-		}
+    BenchmarkBaseEvent *operator->() { return mCurrent; }
 
-		BenchmarkEventListIterator(BenchmarkBaseEvent* current) : mCurrent(current) {
-		}
+    BenchmarkEventListIterator &operator++() {
+      if (mCurrent != nullptr) {
+        mCurrent = mCurrent->mNextEvent;
+      }
+      return *this;
+    }
 
-	public:
-		BenchmarkBaseEvent & operator*() {
-			return *mCurrent;
-		}
+    bool operator==(BenchmarkEventListIterator const &other) const {
+      return mCurrent == other.mCurrent;
+    }
 
-		BenchmarkBaseEvent* operator->() {
-			return mCurrent;
-		}
+    bool operator!=(BenchmarkEventListIterator const &other) const {
+      return mCurrent != other.mCurrent;
+    }
+  };
 
-		BenchmarkEventListIterator & operator++() {
-			if(mCurrent != nullptr) {
-				mCurrent = mCurrent->mNextEvent;
-			}
-			return *this;
-		}
+  BenchmarkEventListIterator begin() const {
+    return BenchmarkEventListIterator(mHead);
+  }
 
-		bool operator==(BenchmarkEventListIterator const & other) const {
-			return mCurrent == other.mCurrent;
-		}
+  BenchmarkEventListIterator end() const {
+    return BenchmarkEventListIterator();
+  }
 
-		bool operator!=(BenchmarkEventListIterator const & other) const {
-			return mCurrent != other.mCurrent;
-		}
-	};
-
-	BenchmarkEventListIterator begin() const {
-		return BenchmarkEventListIterator(mHead);
-	}
-
-	BenchmarkEventListIterator end() const {
-		return BenchmarkEventListIterator();
-	}
-
-	size_t size() const {
-		return mNumberEvents;
-	}
+  size_t size() const { return mNumberEvents; }
 };
 
-}}
+} // namespace benchmark
+} // namespace idx
 
 #endif

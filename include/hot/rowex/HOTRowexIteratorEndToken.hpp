@@ -3,17 +3,18 @@
 
 #include "HOTRowexChildPointer.hpp"
 
-namespace hot { namespace rowex {
+namespace hot {
+namespace rowex {
 
-template<int dummy>
-struct HOTRowexIteratorEndTokenWorkaround {
-	static HOTRowexChildPointer END_TOKEN;
+template <int dummy> struct HOTRowexIteratorEndTokenWorkaround {
+  static HOTRowexChildPointer END_TOKEN;
 };
-template<int dummy> HOTRowexChildPointer HOTRowexIteratorEndTokenWorkaround<dummy>::END_TOKEN = {};
+template <int dummy>
+HOTRowexChildPointer HOTRowexIteratorEndTokenWorkaround<dummy>::END_TOKEN = {};
 
 using HOTRowexIteratorEndToken = HOTRowexIteratorEndTokenWorkaround<0>;
 
-}}
+} // namespace rowex
+} // namespace hot
 
 #endif
-

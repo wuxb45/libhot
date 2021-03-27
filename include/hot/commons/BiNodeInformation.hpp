@@ -5,10 +5,12 @@
 
 #include "hot/commons/EntriesRange.hpp"
 
-namespace hot { namespace commons {
+namespace hot {
+namespace commons {
 
 /**
- * The BiNodeInformation, contains all information which is necessary a BiNode and the entries in its subtree for a linearized binary patricia trie.
+ * The BiNodeInformation, contains all information which is necessary a BiNode
+ * and the entries in its subtree for a linearized binary patricia trie.
  *
  * It therefore consists of:
  * 	+ The positions of the elements contained in its left/right subtree
@@ -16,26 +18,29 @@ namespace hot { namespace commons {
  * 	+ A partial key representing the corresponding discriminative bit
  */
 struct BiNodeInformation {
-	uint32_t const mDiscriminativeBitIndex;
-	uint32_t const mDiscriminativeBitMask;
+  uint32_t const mDiscriminativeBitIndex;
+  uint32_t const mDiscriminativeBitMask;
 
-	EntriesRange const mLeft;
-	EntriesRange const mRight;
+  EntriesRange const mLeft;
+  EntriesRange const mRight;
 
-	BiNodeInformation(uint32_t discriminativeBitIndex, uint32_t discriminativeBitMask, EntriesRange const & left, EntriesRange const & right)
-		: mDiscriminativeBitIndex(discriminativeBitIndex), mDiscriminativeBitMask(discriminativeBitMask), mLeft(left), mRight(right)
-	{
-	}
+  BiNodeInformation(uint32_t discriminativeBitIndex,
+                    uint32_t discriminativeBitMask, EntriesRange const &left,
+                    EntriesRange const &right)
+      : mDiscriminativeBitIndex(discriminativeBitIndex),
+        mDiscriminativeBitMask(discriminativeBitMask), mLeft(left),
+        mRight(right) {}
 
-	/**
-	 * @return the total number of entries in the subtree rooted at the described BiNode
-	 */
-	uint32_t getTotalNumberEntries() const {
-		return mLeft.mNumberEntriesInRange + mRight.mNumberEntriesInRange;
-	}
-
+  /**
+   * @return the total number of entries in the subtree rooted at the described
+   * BiNode
+   */
+  uint32_t getTotalNumberEntries() const {
+    return mLeft.mNumberEntriesInRange + mRight.mNumberEntriesInRange;
+  }
 };
 
-}}
+} // namespace commons
+} // namespace hot
 
 #endif

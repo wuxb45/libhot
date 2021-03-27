@@ -3,7 +3,8 @@
 
 /** @author robert.binna@uibk.ac.at */
 
-namespace idx { namespace contenthelpers {
+namespace idx {
+namespace contenthelpers {
 
 /**
  * Key Extractor for a pointer to a pair like type.
@@ -11,14 +12,15 @@ namespace idx { namespace contenthelpers {
  *
  * @tparam PointerPairLikeType
  */
-template<typename PointerPairLikeType> struct PairPointerKeyExtractor {
-	using KeyType = decltype(std::declval<PointerPairLikeType>()->first);
+template <typename PointerPairLikeType> struct PairPointerKeyExtractor {
+  using KeyType = decltype(std::declval<PointerPairLikeType>()->first);
 
-	inline KeyType operator()(PointerPairLikeType const & value) const {
-		return value->first;
-	}
+  inline KeyType operator()(PointerPairLikeType const &value) const {
+    return value->first;
+  }
 };
 
-} }
+} // namespace contenthelpers
+} // namespace idx
 
 #endif

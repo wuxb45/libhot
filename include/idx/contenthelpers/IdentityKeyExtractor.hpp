@@ -3,22 +3,21 @@
 
 /** @author robert.binna@uibk.ac.at */
 
-namespace idx { namespace contenthelpers {
+namespace idx {
+namespace contenthelpers {
 
 /**
  * A trivial key Extractor which returns the value itself as the extracted key
  *
  * @tparam ValueType
  */
-template<typename ValueType>
-struct IdentityKeyExtractor {
-	typedef ValueType KeyType;
+template <typename ValueType> struct IdentityKeyExtractor {
+  typedef ValueType KeyType;
 
-	inline KeyType operator()(ValueType const &value) const {
-		return value;
-	}
+  inline KeyType operator()(ValueType const &value) const { return value; }
 };
 
-} }
+} // namespace contenthelpers
+} // namespace idx
 
 #endif

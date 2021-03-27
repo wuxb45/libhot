@@ -3,20 +3,23 @@
 
 #include <hot/commons/InsertInformation.hpp>
 
-namespace hot { namespace rowex {
+namespace hot {
+namespace rowex {
 
-template<typename InsertStackEntryType>
-struct HOTRowexFirstInsertLevel {
-	InsertStackEntryType *mFirstEntry;
-	hot::commons::InsertInformation mInsertInformation;
-	bool mIsLeafNodePushdown;
+template <typename InsertStackEntryType> struct HOTRowexFirstInsertLevel {
+  InsertStackEntryType *mFirstEntry;
+  hot::commons::InsertInformation mInsertInformation;
+  bool mIsLeafNodePushdown;
 
-	HOTRowexFirstInsertLevel(InsertStackEntryType *firstEntry, hot::commons::InsertInformation const &insertInformation,
-					 bool isLeafNodePushdown)
-		: mFirstEntry(firstEntry), mInsertInformation(insertInformation), mIsLeafNodePushdown(isLeafNodePushdown) {
-	}
+  HOTRowexFirstInsertLevel(
+      InsertStackEntryType *firstEntry,
+      hot::commons::InsertInformation const &insertInformation,
+      bool isLeafNodePushdown)
+      : mFirstEntry(firstEntry), mInsertInformation(insertInformation),
+        mIsLeafNodePushdown(isLeafNodePushdown) {}
 };
 
-} }
+} // namespace rowex
+} // namespace hot
 
 #endif

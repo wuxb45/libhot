@@ -6,20 +6,23 @@
 
 #include "idx/utils/RandomRangeGenerator.hpp"
 
-namespace idx { namespace utils {
+namespace idx {
+namespace utils {
 
-template<class ElementType> void randomizeData(std::vector<ElementType> & data) {
-	std::random_shuffle(data.begin(), data.end());
+template <class ElementType>
+void randomizeData(std::vector<ElementType> &data) {
+  std::random_shuffle(data.begin(), data.end());
 }
 
-template<class ElementType> void sortData(std::vector<ElementType> & data) {
-	std::sort(data.begin(), data.end());
+template <class ElementType> void sortData(std::vector<ElementType> &data) {
+  std::sort(data.begin(), data.end());
 }
 
-template<class ElementType> void reverseData(std::vector<ElementType> & data) {
-	std::sort(data.begin(), data.end(), std::greater<ElementType>());
+template <class ElementType> void reverseData(std::vector<ElementType> &data) {
+  std::sort(data.begin(), data.end(), std::greater<ElementType>());
 }
 
-} }
+} // namespace utils
+} // namespace idx
 
 #endif

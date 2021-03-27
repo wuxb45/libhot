@@ -5,21 +5,22 @@
 
 #include "idx/contenthelpers/CStringComparator.hpp"
 
-namespace idx { namespace contenthelpers {
+namespace idx {
+namespace contenthelpers {
 
 /**
- * Helper template which allows to derive a comparator function for a given KeyType
+ * Helper template which allows to derive a comparator function for a given
+ * KeyType
  *
  * @tparam the type of the key to compare
  */
-template<typename V> struct KeyComparator {
-	using type = std::less<V>;
+template <typename V> struct KeyComparator { using type = std::less<V>; };
+
+template <> struct KeyComparator<const char *> {
+  using type = idx::contenthelpers::CStringComparator;
 };
 
-template<> struct KeyComparator<const char*> {
-	using type = idx::contenthelpers::CStringComparator;
-};
-
-} }
+} // namespace contenthelpers
+} // namespace idx
 
 #endif

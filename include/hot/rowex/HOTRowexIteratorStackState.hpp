@@ -6,30 +6,37 @@
 
 #include <cstdint>
 
-namespace hot { namespace rowex {
+namespace hot {
+namespace rowex {
 
-template<typename StackEntryType> struct HOTRowexIteratorStackState {
-	StackEntryType *mRootEntry;
-	StackEntryType *mStackEntry;
-	int32_t mBufferState;
+template <typename StackEntryType> struct HOTRowexIteratorStackState {
+  StackEntryType *mRootEntry;
+  StackEntryType *mStackEntry;
+  int32_t mBufferState;
 
-	HOTRowexIteratorStackState(StackEntryType *rootEntry, int32_t bufferState, StackEntryType *stackEntry)
-		: mRootEntry(rootEntry), mStackEntry(stackEntry), mBufferState(bufferState) {
-	}
+  HOTRowexIteratorStackState(StackEntryType *rootEntry, int32_t bufferState,
+                             StackEntryType *stackEntry)
+      : mRootEntry(rootEntry), mStackEntry(stackEntry),
+        mBufferState(bufferState) {}
 
-	HOTRowexIteratorStackState(StackEntryType *rootEntry) : mRootEntry(rootEntry), mStackEntry(rootEntry),
-													mBufferState(ITERATOR_FILL_BUFFER_STATE_END) {
-		mStackEntry->init(&HOTRowexIteratorEndToken::END_TOKEN, &HOTRowexIteratorEndToken::END_TOKEN + 1);
-	}
+  HOTRowexIteratorStackState(StackEntryType *rootEntry)
+      : mRootEntry(rootEntry), mStackEntry(rootEntry),
+        mBufferState(ITERATOR_FILL_BUFFER_STATE_END) {
+    mStackEntry->init(&HOTRowexIteratorEndToken::END_TOKEN,
+                      &HOTRowexIteratorEndToken::END_TOKEN + 1);
+  }
 
-	HOTRowexIteratorStackState(HOTRowexIteratorStackState const &mOther) = default;
+  HOTRowexIteratorStackState(HOTRowexIteratorStackState const &mOther) =
+      default;
 
-	void end() {
-		mStackEntry->init(&HOTRowexIteratorEndToken::END_TOKEN, &HOTRowexIteratorEndToken::END_TOKEN + 1);
-		mBufferState = ITERATOR_FILL_BUFFER_STATE_END;
-	}
+  void end() {
+    mStackEntry->init(&HOTRowexIteratorEndToken::END_TOKEN,
+                      &HOTRowexIteratorEndToken::END_TOKEN + 1);
+    mBufferState = ITERATOR_FILL_BUFFER_STATE_END;
+  }
 };
 
-}}
+} // namespace rowex
+} // namespace hot
 
 #endif

@@ -5,23 +5,24 @@
 
 #include "HOTSingleThreadedChildPointer.hpp"
 
-namespace hot { namespace singlethreaded {
+namespace hot {
+namespace singlethreaded {
 
 struct HOTSingleThreadedInsertStackEntry {
-	HOTSingleThreadedChildPointer *mChildPointer;
-	hot::commons::SearchResultForInsert mSearchResultForInsert;
+  HOTSingleThreadedChildPointer *mChildPointer;
+  hot::commons::SearchResultForInsert mSearchResultForInsert;
 
-	inline void initLeaf(HOTSingleThreadedChildPointer * childPointer) {
-		mChildPointer = childPointer;
-		//important for finding the correct depth!!
-		mSearchResultForInsert.mMostSignificantBitIndex = UINT16_MAX;
-	}
+  inline void initLeaf(HOTSingleThreadedChildPointer *childPointer) {
+    mChildPointer = childPointer;
+    // important for finding the correct depth!!
+    mSearchResultForInsert.mMostSignificantBitIndex = UINT16_MAX;
+  }
 
-	//PERFORMANCE this must be uninitialized
-	inline HOTSingleThreadedInsertStackEntry() {
-	}
+  // PERFORMANCE this must be uninitialized
+  inline HOTSingleThreadedInsertStackEntry() {}
 };
 
-} }
+} // namespace singlethreaded
+} // namespace hot
 
 #endif

@@ -4,29 +4,35 @@
 #include <idx/contenthelpers/IdentityKeyExtractor.hpp>
 #include <idx/contenthelpers/PairKeyExtractor.hpp>
 
-namespace idx { namespace benchmark {
+namespace idx {
+namespace benchmark {
 
-template<typename ValueType, template <typename> typename KeyExtractor> struct InsertEvent {
-	ValueType mValueToInsert;
+template <typename ValueType, template <typename> typename KeyExtractor>
+struct InsertEvent {
+  ValueType mValueToInsert;
 
-	//InsertEvent static read(std::istream const & input);
+  // InsertEvent static read(std::istream const & input);
 };
 
-/*template<typename ValueType, template <typename> typename KeyExtractor> InsertEvent<ValueType, KeyExtractor> InsertEvent<ValueType, KeyExtractor>::read(std::istream const & input) {
-	ValueType value;
-	input >> value;
-	return InsertEvent(value);
+/*template<typename ValueType, template <typename> typename KeyExtractor>
+InsertEvent<ValueType, KeyExtractor> InsertEvent<ValueType,
+KeyExtractor>::read(std::istream const & input) { ValueType value; input >>
+value; return InsertEvent(value);
 }
 
-template<typename PairKeyType, typename PairValueType, template <typename> typename KeyExtractor> InsertEvent<std::pair<PairKeyType, PairValueType>, KeyExtractor> InsertEvent<std::pair<PairKeyType, PairValueType>, KeyExtractor>::read(std::istream const & input) {
-	std::pair<PairKeyType, PairValueType> value;
+template<typename PairKeyType, typename PairValueType, template <typename>
+typename KeyExtractor> InsertEvent<std::pair<PairKeyType, PairValueType>,
+KeyExtractor> InsertEvent<std::pair<PairKeyType, PairValueType>,
+KeyExtractor>::read(std::istream const & input) { std::pair<PairKeyType,
+PairValueType> value;
 
-	input >> value.first;
-	input >> value.second;
+        input >> value.first;
+        input >> value.second;
 
-	return InsertEvent(value);
+        return InsertEvent(value);
 }*/
 
-} }
+} // namespace benchmark
+} // namespace idx
 
 #endif
